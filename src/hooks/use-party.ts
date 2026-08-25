@@ -30,6 +30,8 @@ function toRank(slot: PlayerSlot): PlayerRank | null {
   return { medal: slot.medal, stars: slot.stars }
 }
 
+export type Party = ReturnType<typeof useParty>
+
 export function useParty() {
   const [slots, setSlots] = useState<readonly PlayerSlot[]>(() =>
     Array.from({ length: PARTY_SIZE }, () => emptySlot)
