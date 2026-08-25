@@ -23,12 +23,18 @@ grupo. Uso casual, sesiones de menos de un minuto, mayoría desde el teléfono.
 
 MVP:
 
-- Formulario de 1 a 5 jugadores: selección de medalla (Herald → Immortal) y estrellas (1-5).
-- Immortal sin estrellas. Campo opcional de número de leaderboard para afinarlo.
-- Cálculo del promedio sobre escala lineal de rango, con redondeo a medalla + estrella.
-- Margen de error visible, obligatorio cuando hay un Immortal sin número.
+- Formulario de 1 a 5 jugadores: selección de medalla (Heraldo → Inmortal) y estrellas (1-5).
+- Inmortal sin estrellas. Campo opcional de posición de leaderboard para afinarlo.
+- Cálculo del promedio sobre escala lineal de MMR, con redondeo a medalla + estrella.
+- Margen de error **siempre** visible, y notoriamente más ancho con un Inmortal
+  sin posición.
 - MMR estimado como dato secundario, siempre etiquetado como estimación.
 - Responsive: móvil y escritorio.
+
+Cada rango se convierte en un **intervalo** de MMR, nunca en un número suelto.
+El promedio de los intervalos produce el margen de error de forma natural. Esa es
+la razón de que la escala sea MMR y no el índice de medalla: Inmortal no tiene
+techo y es el único punto donde la linealidad se rompe.
 
 Fuera del MVP: cuentas de usuario, persistencia, historial, compartir resultado
 como imagen, integración con Steam.
@@ -59,9 +65,15 @@ bun run typecheck # tsc --noEmit
 
 ## 5. Convenciones de código
 
-- **Idioma del código: inglés.** Identificadores, comentarios, textos de UI,
-  mensajes de error y commits en inglés. La documentación de proyecto puede ir en
-  español neutro. Nunca modismos regionales.
+- **Idiomas, separados por capa:**
+  - Código, identificadores, comentarios, nombres de archivo y commits: **inglés**.
+  - Textos visibles de UI, `aria-label` y mensajes al usuario: **español neutro**.
+    El diseño de origen está en español y esa es la decisión del producto.
+  - Documentación del proyecto: español neutro.
+  - Nunca modismos regionales, en ninguna capa.
+- Los identificadores de medalla en el dominio son **inglés** (`herald`, `divine`).
+  Su traducción vive en `src/components/medal-presentation.ts`, que es la única
+  frontera donde el dominio se convierte en texto para el usuario.
 - **TDD estricto**: el test se escribe primero y debe fallar antes de escribir la
   implementación. Sin excepción para la lógica de dominio.
 - El dominio (cálculo de rangos) es **TypeScript puro, sin React**. Vive en
@@ -77,41 +89,65 @@ bun run typecheck # tsc --noEmit
 ## 6. Estructura del repositorio
 
 ```
+public/
+└── rank-table.json          # tabla publicada; se actualiza sin tocar código
 src/
-├── domain/          # lógica pura: escala de rangos, promedio, margen de error
-│   ├── rank-scale.ts
-│   └── rank-table.ts # tabla de MMR — dato editable, ver sección 7
-├── components/      # componentes de presentación, sin lógica de negocio
-├── hooks/           # estado de React
-├── services/        # clientes HTTP (OpenDota)
+├── domain/                  # TypeScript puro: sin React, sin red
+│   ├── rank-table.ts        # tipos, tabla empaquetada y validación
+│   └── rank-scale.ts        # intervalos de MMR, promedio y margen de error
+├── services/
+│   └── rank-table-source.ts # carga la tabla publicada, con fallback
+├── hooks/
+│   ├── use-rank-table.ts    # tabla empaquetada primero, remota después
+│   └── use-party.ts         # estado de los 5 jugadores
+├── components/
+│   ├── medal-presentation.ts # etiquetas en español, colores, formato
+│   ├── PlayerCard.tsx
+│   └── ResultPanel.tsx
+├── styles.css
+├── App.tsx
 └── main.tsx
 ```
 
 ## 7. Integraciones externas
 
+### Tabla de MMR: dinámica, con copia de seguridad empaquetada
+
+Valve **no publica** la correspondencia entre medalla y MMR y **ninguna API la
+expone**. Verificado: `GET /distributions` de OpenDota devuelve solo
+`bin`, `bin_name`, `count` y `cumulative_sum`. Cero MMR.
+
+Como no existe una fuente en vivo, el dato se hace actualizable en lugar de
+dinámico de verdad:
+
+1. `public/rank-table.json` se publica junto a la aplicación y se carga en cada
+   sesión desde `src/services/rank-table-source.ts`.
+2. `DEFAULT_RANK_TABLE` en `src/domain/rank-table.ts` es la copia empaquetada.
+   Se usa en el primer render y como fallback.
+3. Actualizar los valores es editar el JSON y commitear. Sin cambios de código.
+
+Reglas duras:
+
+- La tabla remota es **entrada no confiable**. `parseRankTable` la valida entera
+  y la descarta completa ante cualquier anomalía. Una tabla a medias produciría
+  medallas equivocadas con aire de certeza, que es peor que no actualizar.
+- El cálculo **nunca espera a la red**. La copia empaquetada rinde en el primer
+  paint.
+- Los valores son **consenso comunitario, no dato oficial**. Cualquier MMR que se
+  muestre lleva la etiqueta de estimación.
+- Nunca esparcir números de MMR fuera de la tabla.
+
 ### OpenDota (`https://api.opendota.com/api`)
 
-API pública, sin key para uso básico. **No es crítica**: la aplicación calcula
-correctamente sin ella.
+No es crítica: la aplicación calcula correctamente sin conexión.
 
-- `GET /leaderboards?division={americas|europe|se_asia|china}` — top 1000 por
-  región. Único uso real en el MVP: afinar la estimación de un Immortal cuando el
-  usuario aporta su número de leaderboard.
-- `GET /distributions` — distribución de la población por rango. Uso opcional y
-  secundario: mostrar "este lobby supera al X% de los jugadores".
-
-Toda llamada debe degradar con elegancia: si OpenDota no responde, el cálculo
-sigue funcionando con el bucket genérico de Immortal.
-
-### Tabla de MMR por medalla — advertencia importante
-
-Valve **no publica** la correspondencia entre medalla y MMR. Ninguna API la
-expone. Los valores que usamos (≈154 MMR por estrella, 770 por medalla) son
-**consenso comunitario, no dato oficial**, y cambian con el tiempo.
-
-Por eso viven aislados en `src/domain/rank-table.ts`, con la fecha de última
-revisión. Actualizarlos debe ser editar ese archivo y nada más. Nunca esparcir
-números de MMR por el resto del código.
+- `GET /distributions` — funciona. Población por rango (36 bins, `11`–`15`
+  Heraldo … `80` Inmortal). Uso opcional: mostrar "este grupo supera al X% de los
+  jugadores". Aviso: la muestra está sesgada hacia perfiles públicos y reporta un
+  ~4% de Inmortales frente al ~0,05% real. Si se muestra, hay que aclararlo.
+- `GET /leaderboards` — **eliminado, devuelve 404**. Por eso la posición de
+  leaderboard de un Inmortal se estima localmente con la curva de
+  `immortal.leaderboard` en la tabla, sin red y sin API key.
 
 ## 8. Reglas de trabajo con Claude
 
