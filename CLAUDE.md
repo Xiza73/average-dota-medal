@@ -167,5 +167,9 @@ No es crítica: la aplicación calcula correctamente sin conexión.
 - No hacer que el cálculo dependa de una llamada de red.
 - No hacer PR directo a `master`. Las ramas van a `dev`; `master` solo recibe PR
   desde `dev`.
+- No desplegar a mano con `vercel --prod`. El despliegue lo dispara el push a
+  `master`; la configuración está en `vercel.json`. Ver `.claude/skills/deploy/`.
+- No cachear `public/rank-table.json` de forma agresiva. Si se cachea, la tabla
+  deja de ser actualizable y toda la sección 7 pierde sentido.
 - No añadir dependencias sin justificar el peso que agregan.
 - No commitear `CLAUDE.local.md` ni `.claude/settings.local.json`.

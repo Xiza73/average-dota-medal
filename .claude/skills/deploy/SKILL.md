@@ -48,9 +48,44 @@ git push origin v<X.Y.Z>
 
 ## Publicación
 
-> **Sin configurar.** El destino de despliegue todavía no está decidido. Al
-> elegirlo, documentar aquí el comando exacto, la carpeta de salida (`dist/`), el
-> comando de build (`bun run build`) y las variables de entorno.
+**Vercel**, conectado al repositorio de GitHub. El push a `master` dispara el
+despliegue de producción; los PR hacia `dev` generan previews.
+
+La configuración vive en `vercel.json`, versionada: framework `vite`,
+`bun install`, `bun run build`, salida `dist/`. Sin variables de entorno.
+
+Dos cosas que hay que respetar:
+
+- **Production Branch = `master`.** Vercel sugiere la rama por defecto del
+  repositorio, que aquí es `dev`. Aceptar esa sugerencia publicaría cada merge a
+  `dev` directo a producción.
+- `public/rank-table.json` se sirve con `max-age=0, must-revalidate`. Es
+  deliberado: la tabla debe poder actualizarse con un commit y verse enseguida.
+  Si alguien la cachea de forma agresiva, el dato deja de ser actualizable.
+
+Nunca desplegar con `vercel --prod` desde local: genera un despliegue
+desconectado de Git y saltea el flujo de ramas.
+
+> **Pendiente:** anotar aquí la URL de producción una vez conectado el proyecto.
+
+## MCP de Vercel
+
+`.mcp.json` declara el servidor oficial (`https://mcp.vercel.com`, transporte
+HTTP con OAuth). Sirve para consultar despliegues, leer logs de build y de
+runtime, y revisar analíticas sin salir del editor.
+
+Lo que el MCP **no** puede hacer, verificado en su referencia de herramientas:
+no existe ninguna para crear un proyecto enlazado a un repositorio de GitHub ni
+para fijar la Production Branch. Esa conexión se hace una sola vez desde el
+panel de Vercel y no hay forma de automatizarla desde aquí.
+
+`deploy_to_vercel` sí existe, pero sube un árbol de archivos **sin repositorio**.
+Está prohibido en este proyecto por la misma razón que `vercel --prod`: rompe la
+trazabilidad entre lo desplegado y lo que hay en `master`.
+
+Aviso de seguridad: el MCP expone herramientas de compra (`buy_pro`,
+`buy_credits`, `buy_domain`). Nunca invocarlas. Cualquier gasto lo decide y lo
+ejecuta la persona usuaria en su propia cuenta.
 
 ## Reglas
 
