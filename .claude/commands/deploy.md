@@ -40,12 +40,23 @@ git push origin v$1
 
 ## 4. Publicar el build
 
-El artefacto es estático: la carpeta `dist/`. Se sirve desde cualquier host de
-estáticos.
+El destino es **Vercel**, conectado al repositorio de GitHub. El despliegue lo
+dispara el push a `master`; no se despliega a mano desde la línea de comandos.
 
-> **Pendiente de configurar.** Este proyecto todavía no tiene destino de
-> despliegue definido. Cuando se elija (Vercel, Netlify, Cloudflare Pages, GitHub
-> Pages), documentar aquí el comando exacto y las variables de entorno necesarias.
+La configuración está versionada en `vercel.json`: framework `vite`,
+`bun install`, `bun run build`, salida `dist/`. No hay variables de entorno.
+
+Reglas de la conexión:
+
+- **Production Branch debe ser `master`**, no la rama por defecto del
+  repositorio. Vercel propone `dev` porque es la rama por defecto; aceptarlo
+  publicaría cada merge a `dev` sin pasar por release.
+- Los PR hacia `dev` generan preview deployments. Ese es el lugar para revisar
+  un cambio, no producción.
+- Nunca usar `vercel --prod` desde local: crea un despliegue desconectado de Git
+  y saltea todo el flujo de ramas.
+
+> **Pendiente:** anotar aquí la URL de producción una vez conectado el proyecto.
 
 ## Reglas
 
