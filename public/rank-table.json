@@ -1,0 +1,18 @@
+{
+  "version": "1",
+  "source": "Community consensus. Valve does not publish medal-to-MMR values and no public API exposes them.",
+  "reviewedAt": "2026-08-25",
+  "medals": [
+    { "id": "herald", "base": 0, "mmrPerStar": 154 },
+    { "id": "guardian", "base": 770, "mmrPerStar": 154 },
+    { "id": "crusader", "base": 1540, "mmrPerStar": 154 },
+    { "id": "archon", "base": 2310, "mmrPerStar": 154 },
+    { "id": "legend", "base": 3080, "mmrPerStar": 154 },
+    { "id": "ancient", "base": 3850, "mmrPerStar": 154 },
+    { "id": "divine", "base": 4620, "mmrPerStar": 200 }
+  ],
+  "immortal": {
+    "unranked": { "typical": 5900, "max": 7500 },
+    "leaderboard": { "topMmr": 12000, "decay": 724, "maxRank": 1000, "margin": 400 }
+  }
+}
