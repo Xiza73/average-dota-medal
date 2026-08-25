@@ -56,7 +56,7 @@ Reglas de la conexión:
 - Nunca usar `vercel --prod` desde local: crea un despliegue desconectado de Git
   y saltea todo el flujo de ramas.
 
-> **Pendiente:** anotar aquí la URL de producción una vez conectado el proyecto.
+Producción: <https://average-dota-medal.vercel.app/>
 
 ## Reglas
 
