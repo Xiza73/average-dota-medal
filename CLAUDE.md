@@ -29,6 +29,8 @@ MVP:
 - Margen de error **siempre** visible, y notoriamente más ancho con un Inmortal
   sin posición.
 - MMR estimado como dato secundario, siempre etiquetado como estimación.
+- Modo comparación: dos grupos de 1 a 5 jugadores cada uno, con tabs para
+  cargarlos y barras de rango superpuestas para verlos enfrentados.
 - Responsive: móvil y escritorio.
 
 Cada rango se convierte en un **intervalo** de MMR, nunca en un número suelto.
@@ -94,7 +96,8 @@ public/
 src/
 ├── domain/                  # TypeScript puro: sin React, sin red
 │   ├── rank-table.ts        # tipos, tabla empaquetada y validación
-│   └── rank-scale.ts        # intervalos de MMR, promedio y margen de error
+│   ├── rank-scale.ts        # intervalos de MMR, promedio y margen de error
+│   └── party-comparison.ts  # enfrenta dos grupos; solapamiento = sin veredicto
 ├── services/
 │   └── rank-table-source.ts # carga la tabla publicada, con fallback
 ├── hooks/
@@ -103,7 +106,9 @@ src/
 ├── components/
 │   ├── medal-presentation.ts # etiquetas en español, colores, formato
 │   ├── PlayerCard.tsx
-│   └── ResultPanel.tsx
+│   ├── PartyEditor.tsx       # los 5 huecos; reutilizado por ambos modos
+│   ├── ResultPanel.tsx
+│   └── ComparisonPanel.tsx   # veredicto y barras de rango
 ├── styles.css
 ├── App.tsx
 └── main.tsx
