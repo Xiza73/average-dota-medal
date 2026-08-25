@@ -68,6 +68,25 @@ desconectado de Git y saltea el flujo de ramas.
 
 > **Pendiente:** anotar aquí la URL de producción una vez conectado el proyecto.
 
+## MCP de Vercel
+
+`.mcp.json` declara el servidor oficial (`https://mcp.vercel.com`, transporte
+HTTP con OAuth). Sirve para consultar despliegues, leer logs de build y de
+runtime, y revisar analíticas sin salir del editor.
+
+Lo que el MCP **no** puede hacer, verificado en su referencia de herramientas:
+no existe ninguna para crear un proyecto enlazado a un repositorio de GitHub ni
+para fijar la Production Branch. Esa conexión se hace una sola vez desde el
+panel de Vercel y no hay forma de automatizarla desde aquí.
+
+`deploy_to_vercel` sí existe, pero sube un árbol de archivos **sin repositorio**.
+Está prohibido en este proyecto por la misma razón que `vercel --prod`: rompe la
+trazabilidad entre lo desplegado y lo que hay en `master`.
+
+Aviso de seguridad: el MCP expone herramientas de compra (`buy_pro`,
+`buy_credits`, `buy_domain`). Nunca invocarlas. Cualquier gasto lo decide y lo
+ejecuta la persona usuaria en su propia cuenta.
+
 ## Reglas
 
 - Nunca desplegar con tests en rojo.
