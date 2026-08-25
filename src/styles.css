@@ -1,0 +1,398 @@
+:root {
+  --bg: #0f0c12;
+  --ink: #e8ddc9;
+  --ink-soft: #d8cbb2;
+  --muted: #9d8f77;
+  --dim: #8a7d68;
+  --faint: #6f6353;
+  --footnote: #5c5245;
+  --gold: #c9a45f;
+  --gold-bright: #e3c98d;
+  --blood: #a32b25;
+  --line: #2c2330;
+  --line-strong: #3a2f3e;
+  --card: linear-gradient(180deg, #1a141d 0%, #151017 100%);
+  --panel: linear-gradient(180deg, #211722 0%, #161018 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family:
+    'Barlow',
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+::selection {
+  background: var(--blood);
+  color: #fff;
+}
+
+.page {
+  min-height: 100vh;
+  background: radial-gradient(1200px 600px at 50% -10%, #241420 0%, var(--bg) 60%);
+  display: flex;
+  justify-content: center;
+  padding: 48px 20px 80px;
+}
+
+.page__inner {
+  width: 100%;
+  max-width: 820px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Masthead ---------------------------------------------------------------- */
+
+.masthead {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.masthead__title {
+  margin: 0;
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 900;
+  font-size: clamp(28px, 7vw, 40px);
+  letter-spacing: 3px;
+  color: var(--ink);
+  text-shadow: 0 2px 18px rgba(163, 43, 37, 0.45);
+}
+
+.masthead__subtitle {
+  margin: 0;
+  font-size: 15px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.masthead__rule {
+  width: 180px;
+  height: 2px;
+  margin-top: 6px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+/* Party ------------------------------------------------------------------- */
+
+.party {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.player-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.player-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.player-card__identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.player-card__number {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.player-card__title {
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  color: var(--ink-soft);
+}
+
+.player-card__clear {
+  background: none;
+  border: 1px solid var(--line-strong);
+  color: var(--dim);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.player-card__clear:hover {
+  border-color: var(--blood);
+  color: var(--ink-soft);
+}
+
+.player-card__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.player-card__label {
+  font-size: 13px;
+  color: var(--muted);
+  width: 64px;
+  flex-shrink: 0;
+}
+
+.player-card__hint {
+  font-size: 12px;
+  color: var(--faint);
+}
+
+/* Medal chips ------------------------------------------------------------- */
+
+.medal-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.medal-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: #141017;
+  border: 1px solid var(--line);
+  color: var(--dim);
+  border-radius: 7px;
+  padding: 7px 12px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    box-shadow 0.15s;
+}
+
+.medal-chip:hover {
+  color: var(--ink-soft);
+  border-color: var(--medal-color);
+}
+
+.medal-chip[data-selected='true'] {
+  background: rgba(201, 164, 95, 0.12);
+  border-color: var(--medal-color);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--medal-color) 35%, transparent);
+}
+
+.medal-chip__dot {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  transform: rotate(45deg);
+  background: var(--medal-color);
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
+.medal-chip[data-selected='true'] .medal-chip__dot {
+  opacity: 1;
+}
+
+/* Stars and leaderboard input --------------------------------------------- */
+
+.star-row {
+  display: flex;
+  gap: 6px;
+}
+
+.star-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 3px;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--line-strong);
+}
+
+.star-button[data-filled='true'] {
+  color: var(--gold);
+  text-shadow: 0 0 8px rgba(201, 164, 95, 0.5);
+}
+
+.rank-input {
+  width: 120px;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  color: var(--ink);
+  padding: 7px 10px;
+  font: inherit;
+  font-size: 14px;
+}
+
+.rank-input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+/* Result ------------------------------------------------------------------ */
+
+.result {
+  background: var(--panel);
+  border: 1px solid #4a3a2a;
+  border-radius: 12px;
+  padding: 28px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  box-shadow: inset 0 0 40px rgba(163, 43, 37, 0.12);
+}
+
+.result--empty {
+  justify-content: center;
+}
+
+.result--empty p {
+  margin: 0;
+  padding: 12px 0;
+  font-size: 15px;
+  color: var(--dim);
+  text-align: center;
+}
+
+.result__badge {
+  width: 88px;
+  height: 88px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--medal-color) 0%, #1a1015 95%);
+  border: 3px solid var(--gold);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--medal-color) 40%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 900;
+  font-size: 28px;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.result__body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.result__caption {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.result__headline {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.result__medal {
+  font-family: 'Cinzel', Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(24px, 6vw, 32px);
+  color: var(--ink);
+}
+
+.result__stars {
+  font-size: 22px;
+  color: var(--gold);
+  letter-spacing: 3px;
+}
+
+.result__meta {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.result__meta strong {
+  color: var(--ink-soft);
+}
+
+.result__margin {
+  color: var(--faint);
+}
+
+/* Footnote ---------------------------------------------------------------- */
+
+.footnote {
+  text-align: center;
+  font-size: 12px;
+  color: var(--footnote);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.footnote p {
+  margin: 0;
+}
+
+/* Mobile ------------------------------------------------------------------ */
+
+@media (max-width: 560px) {
+  .page {
+    padding: 28px 14px 56px;
+  }
+
+  .result {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 22px;
+  }
+
+  .player-card__label {
+    width: auto;
+  }
+}
