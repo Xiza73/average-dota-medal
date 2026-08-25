@@ -66,7 +66,16 @@ Dos cosas que hay que respetar:
 Nunca desplegar con `vercel --prod` desde local: genera un despliegue
 desconectado de Git y saltea el flujo de ramas.
 
-> **Pendiente:** anotar aquí la URL de producción una vez conectado el proyecto.
+Producción: <https://average-dota-medal.vercel.app/>
+
+Comprobación rápida de que los headers siguen bien después de un deploy:
+
+```bash
+curl -sI https://average-dota-medal.vercel.app/rank-table.json | grep -i cache-control
+```
+
+Debe responder `public, max-age=0, must-revalidate`. Si algún día devuelve otra
+cosa, la tabla dejó de ser actualizable.
 
 ## MCP de Vercel
 
