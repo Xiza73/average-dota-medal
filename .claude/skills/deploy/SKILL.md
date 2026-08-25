@@ -48,9 +48,25 @@ git push origin v<X.Y.Z>
 
 ## Publicación
 
-> **Sin configurar.** El destino de despliegue todavía no está decidido. Al
-> elegirlo, documentar aquí el comando exacto, la carpeta de salida (`dist/`), el
-> comando de build (`bun run build`) y las variables de entorno.
+**Vercel**, conectado al repositorio de GitHub. El push a `master` dispara el
+despliegue de producción; los PR hacia `dev` generan previews.
+
+La configuración vive en `vercel.json`, versionada: framework `vite`,
+`bun install`, `bun run build`, salida `dist/`. Sin variables de entorno.
+
+Dos cosas que hay que respetar:
+
+- **Production Branch = `master`.** Vercel sugiere la rama por defecto del
+  repositorio, que aquí es `dev`. Aceptar esa sugerencia publicaría cada merge a
+  `dev` directo a producción.
+- `public/rank-table.json` se sirve con `max-age=0, must-revalidate`. Es
+  deliberado: la tabla debe poder actualizarse con un commit y verse enseguida.
+  Si alguien la cachea de forma agresiva, el dato deja de ser actualizable.
+
+Nunca desplegar con `vercel --prod` desde local: genera un despliegue
+desconectado de Git y saltea el flujo de ramas.
+
+> **Pendiente:** anotar aquí la URL de producción una vez conectado el proyecto.
 
 ## Reglas
 
