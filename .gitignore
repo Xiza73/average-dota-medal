@@ -1,0 +1,31 @@
+# Claude Code — archivos personales
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Estado local autogenerado por herramientas (contiene rutas absolutas)
+.atl/
+
+# Dependencias
+node_modules/
+
+# Build
+dist/
+*.tsbuildinfo
+
+# Entorno
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+bun-debug.log*
+
+# Editor / SO
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Test
+coverage/
